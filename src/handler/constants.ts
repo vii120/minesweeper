@@ -23,3 +23,8 @@ for (const i of gridDelta) {
   }
 }
 export const ADJACENT_GRID_DELTA = gridAdjacent;
+
+export const TOAST_MSG = Object.freeze({
+  WIN: 'Congratulations! You win 🎉!',
+  LOSE: 'Oops, you stepped on a mine 🤕!',
+});

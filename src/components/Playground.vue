@@ -9,9 +9,12 @@
         <div
           class="board-list__cell"
           :class="{
-            clickable: !gameOver && !cell.isRevealed && !cell.isFlagged,
-            revealed: cell.isRevealed || (gameOver && cell.isMine),
-            error: gameOver && cell.isFlagged && !cell.isMine,
+            'board-list__cell--clickable':
+              !gameOver && !cell.isRevealed && !cell.isFlagged,
+            'board-list__cell--revealed':
+              cell.isRevealed || (gameOver && cell.isMine),
+            'board-list__cell--error':
+              gameOver && cell.isFlagged && !cell.isMine,
           }"
           :data-count="cell.count || null"
           v-for="(cell, ckey) in row"
@@ -38,6 +41,7 @@
         </div>
       </div>
     </div>
+    <Toast />
   </div>
 </template>
 
@@ -46,6 +50,7 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGame } from '@/store';
 import { GAME_STATUS } from '@/handler/constants';
+import Toast from './Toast.vue';
 
 const gameStore = useGame();
 const { board, gameStatus } = storeToRefs(gameStore);
@@ -63,6 +68,7 @@ $count-colors: #4d8bbf, #3f924f, #bb3e51, #5f2a7e, #f2e640, #19214d, #6bc144,
   #a86c38;
 
 .board-wrapper {
+  position: relative;
   .board-list {
     width: 7rem;
     height: 7rem;
@@ -84,8 +90,9 @@ $count-colors: #4d8bbf, #3f924f, #bb3e51, #5f2a7e, #f2e640, #19214d, #6bc144,
       border-radius: 0.1rem;
       background-color: var(--bg-color);
       box-shadow: $shadow-outer;
-      transition: box-shadow 0.2s, background-color 0.2s;
+      transition: box-shadow 0.3s, background-color 0.3s;
       cursor: pointer;
+      // gradient background for hover
       &:before {
         content: '';
         position: absolute;
@@ -99,15 +106,15 @@ $count-colors: #4d8bbf, #3f924f, #bb3e51, #5f2a7e, #f2e640, #19214d, #6bc144,
         visibility: hidden;
         transition: all 0.2s;
       }
-      &.clickable:hover::before {
+      &--clickable:hover::before {
         opacity: 1;
         visibility: visible;
       }
-      &.revealed {
+      &--revealed {
         box-shadow: $shadow-inner;
       }
-      &.error {
-        background-color: rgba(indianred, 0.5);
+      &--error {
+        background-color: rgba(indianred, 0.3);
       }
       @for $i from 1 through length($count-colors) {
         &[data-count='#{$i}'] {

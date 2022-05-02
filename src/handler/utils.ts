@@ -23,4 +23,15 @@ export function isCellValid(
   );
 }
 
-// @todo: detect device to display rules
+// detect user device: mobile or desktop
+export function detectDevice(): string {
+  if (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    )
+  ) {
+    return 'mobile';
+  } else {
+    return 'desktop';
+  }
+}

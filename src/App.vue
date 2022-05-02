@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <ThemeBtn />
+    <Navbar />
     <PlayInfo />
     <Playground />
   </div>
@@ -10,7 +10,7 @@
 import { onMounted } from 'vue';
 import Playground from '@/components/Playground.vue';
 import PlayInfo from '@/components/PlayInfo.vue';
-import ThemeBtn from '@/components/ThemeBtn.vue';
+import Navbar from '@/components/Navbar.vue';
 import { useGeneral, useGame } from '@/store';
 
 const { initBoard } = useGame();
@@ -31,16 +31,14 @@ onMounted(() => {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--primary-color);
-  font-size: 0.24rem;
+  font-size: max(0.24rem, 14px);
   background-color: var(--bg-color);
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: auto;
   transition: background-color 0.1s;
   .main {
     position: relative;
     max-width: 14rem;
     margin: auto;
-    padding-top: 0.8rem;
   }
 }
 </style>

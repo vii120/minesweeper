@@ -24,12 +24,10 @@ const { theme } = storeToRefs(generalStore);
 
 <style lang="scss">
 .theme-btn-wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
   .btn--theme {
-    width: 1.6rem;
-    height: 0.7rem;
+    position: relative;
+    width: 1.4rem;
+    height: 0.65rem;
     padding: 0 0.2rem;
     display: flex;
     justify-content: space-between;
@@ -38,7 +36,7 @@ const { theme } = storeToRefs(generalStore);
     box-shadow: $shadow-inner;
     &.dark {
       .dot {
-        transform: translateX(0.8rem);
+        transform: translateX(0.7rem);
       }
       ion-icon {
         &[name='sunny'] {
@@ -51,7 +49,6 @@ const { theme } = storeToRefs(generalStore);
     }
     ion-icon {
       color: orange;
-      font-size: 0.36rem;
       &[name='sunny'] {
         opacity: 1;
       }
@@ -61,7 +58,7 @@ const { theme } = storeToRefs(generalStore);
     }
     .dot {
       position: absolute;
-      left: 0.15rem;
+      left: 0.1rem;
       width: 0.5rem;
       height: 0.5rem;
       border-radius: 50%;

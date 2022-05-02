@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia';
+import { useGeneral } from '@/store';
 import {
   BOARD_SIZE,
   MINE_COUNT,
   GAME_STATUS,
   ADJACENT_GRID_DELTA,
+  TOAST_MSG,
 } from '@/handler/constants';
 import { shuffle, isCellValid } from '@/handler/utils';
 
@@ -43,12 +45,17 @@ export default defineStore('game', {
     },
     handleReset() {
       this.startFirstStep = false;
-      this.gameStatus = GAME_STATUS.DEFAULT;
+      this.updateGameStatus(GAME_STATUS.DEFAULT);
       this.initBoard();
+      // clear toast when restart
+      const generalStore = useGeneral();
+      if (generalStore.currentToast) {
+        generalStore.removeToast();
+      }
     },
     handleStart() {
       if (this.gameStatus === GAME_STATUS.DEFAULT) {
-        this.gameStatus = GAME_STATUS.PLAY;
+        this.updateGameStatus(GAME_STATUS.PLAY);
       }
     },
     handleCellClick(row: number, col: number) {
@@ -60,8 +67,7 @@ export default defineStore('game', {
       this.checkFirstStep(row, col);
       // after checking first step, the position of the mine may change
       if (this.board[row][col].isMine) {
-        // this.board[row][col].isRevealed = true;
-        this.gameStatus = GAME_STATUS.LOSE;
+        this.updateGameStatus(GAME_STATUS.LOSE);
       } else {
         this.revealCell(row, col);
       }
@@ -83,7 +89,8 @@ export default defineStore('game', {
           const { isMine, isFlagged, isRevealed } =
             this.board[item.row + r][item.col + c];
           if (clickedCell && isMine && !isFlagged) {
-            this.gameStatus = GAME_STATUS.LOSE;
+            this.updateGameStatus(GAME_STATUS.LOSE);
+
             break;
           }
           if (isMine) {
@@ -126,7 +133,7 @@ export default defineStore('game', {
         if (!el.isRevealed && !el.isFlagged) return; // not fully opened
         if (el.isMine && !el.isFlagged) return; // not fully flagged
       }
-      this.gameStatus = GAME_STATUS.WIN;
+      this.updateGameStatus(GAME_STATUS.WIN);
     },
     expandFromCell(row: number, col: number) {
       if (this.gameStatus !== GAME_STATUS.PLAY) return;
@@ -140,6 +147,20 @@ export default defineStore('game', {
       }
       if (flagCount !== count) return;
       this.revealCell(row, col, true);
+    },
+    updateGameStatus(status: string) {
+      this.gameStatus = status;
+      const { addToast } = useGeneral();
+      switch (status) {
+        case GAME_STATUS.WIN:
+          addToast(TOAST_MSG.WIN);
+          break;
+        case GAME_STATUS.LOSE:
+          addToast(TOAST_MSG.LOSE);
+          break;
+        default:
+          break;
+      }
     },
   },
   getters: {

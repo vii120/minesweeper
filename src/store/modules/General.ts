@@ -3,12 +3,12 @@ import { THEME_MAP } from '@/handler/constants';
 
 type GeneralType = {
   theme: typeof THEME_MAP[keyof typeof THEME_MAP];
-  currentToast: string[];
+  currentToast: string | null;
 };
 
 const state = (): GeneralType => ({
   theme: THEME_MAP.LIGHT,
-  currentToast: [],
+  currentToast: null,
 });
 
 export default defineStore('general', {
@@ -24,10 +24,10 @@ export default defineStore('general', {
       this.setThemeAttr();
     },
     addToast(msg: string) {
-      this.currentToast.push(msg);
+      this.currentToast = msg;
     },
     removeToast() {
-      this.currentToast.pop();
+      this.currentToast = null;
     },
   },
 });
