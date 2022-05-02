@@ -60,11 +60,10 @@ export default defineStore('game', {
       this.checkFirstStep(row, col);
       // after checking first step, the position of the mine may change
       if (this.board[row][col].isMine) {
-        this.board[row][col].isRevealed = true;
+        // this.board[row][col].isRevealed = true;
         this.gameStatus = GAME_STATUS.LOSE;
       } else {
         this.revealCell(row, col);
-        this.checkWinStatus();
       }
     },
     revealCell(row: number, col: number, isExpand = false) {
@@ -97,6 +96,7 @@ export default defineStore('game', {
           queue.push(...tempQueue);
         }
       }
+      this.checkWinStatus();
     },
     checkFirstStep(row: number, col: number) {
       if (this.startFirstStep) return;

@@ -1,36 +1,33 @@
 import { defineStore } from 'pinia';
-
-// TYPE
-export enum ToastType {
-  Message = 'Message',
-}
+import { THEME_MAP } from '@/handler/constants';
 
 type GeneralType = {
-  currentToast: ToastType[];
-  errorMessage: string;
+  theme: typeof THEME_MAP[keyof typeof THEME_MAP];
+  currentToast: string[];
 };
 
 const state = (): GeneralType => ({
+  theme: THEME_MAP.LIGHT,
   currentToast: [],
-  errorMessage: '',
 });
 
 export default defineStore('general', {
   state,
   actions: {
-    addToast(name: ToastType) {
-      this.currentToast.push(name);
+    setThemeAttr() {
+      document.body.setAttribute('data-theme', this.theme);
+    },
+    toggleTheme() {
+      this.theme === THEME_MAP.DARK
+        ? (this.theme = THEME_MAP.LIGHT)
+        : (this.theme = THEME_MAP.DARK);
+      this.setThemeAttr();
+    },
+    addToast(msg: string) {
+      this.currentToast.push(msg);
     },
     removeToast() {
-      const removed = this.currentToast.pop();
-      // reset message
-      if (removed === ToastType.Message) {
-        this.errorMessage = '';
-      }
-    },
-    updateMessage(msg: string) {
-      this.errorMessage = msg;
-      this.currentToast.push(ToastType.Message);
+      this.currentToast.pop();
     },
   },
 });

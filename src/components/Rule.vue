@@ -1,6 +1,6 @@
 <template>
   <div class="rule-wrapper">
-    <!-- @todo: popup folder? -->
+    <!-- @todo: overlay popup -->
   </div>
 </template>
 

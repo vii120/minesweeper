@@ -8,6 +8,11 @@ export const GAME_STATUS = Object.freeze({
   LOSE: 'lost',
 });
 
+export const THEME_MAP = Object.freeze({
+  DARK: 'dark',
+  LIGHT: 'light',
+});
+
 // all combinations of [-1, 0, 1]*[-1, 0, 1]
 const gridDelta = [-1, 0, 1];
 const gridAdjacent = [];

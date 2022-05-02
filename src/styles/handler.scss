@@ -1,6 +1,28 @@
 // font
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 
-// variable
+// css variable
+:root {
+  --primary-color: #333;
+  --bg-color: #eee;
+  --shadow-light: #fff;
+  --shadow-dark: #ccc;
+  --btn-hover-mask: linear-gradient(45deg, #d2d2d2, #fff);
+}
+
+[data-theme='dark'] {
+  --primary-color: #fff;
+  --bg-color: #333;
+  --shadow-light: #666;
+  --shadow-dark: #000;
+  --btn-hover-mask: linear-gradient(45deg, #111, #555);
+}
+
+// sass variables
+$main-bdrs: 0.2rem;
+$shadow-outer: 3px 3px 6px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+$shadow-inner: inset 2px 2px 5px var(--shadow-dark),
+  inset -2px -2px 5px var(--shadow-light);
 
 // mixin
 @mixin flexCenter($dir: 'row') {
