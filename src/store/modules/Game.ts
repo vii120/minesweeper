@@ -7,8 +7,7 @@ import {
   ADJACENT_GRID_DELTA,
   TOAST_MSG,
 } from '@/handler/constants';
-import { shuffle, isCellValid } from '@/handler/utils';
-import { detectDevice, detectOS } from '@/handler/utils';
+import { shuffle, isCellValid, detectDevice, detectOS } from '@/handler/utils';
 
 type BoardItem = {
   isMine: boolean;
@@ -16,6 +15,12 @@ type BoardItem = {
   isRevealed: boolean;
   count: number;
 };
+
+type CellItem = {
+  row: number;
+  col: number;
+};
+
 type GameType = {
   userDevice: string;
   userOS: string;
@@ -81,34 +86,28 @@ export default defineStore('game', {
         this.revealCell(row, col);
       }
     },
+    // @param isExpand imply the current cell is from expandFromCell, need to force check adjacent cells
     revealCell(row: number, col: number, isExpand = false) {
-      const queue: { row: number; col: number }[] = [];
+      const queue: CellItem[] = [];
       queue.unshift({ row, col });
-      while (queue.length !== 0) {
-        const item = queue.shift();
-        if (!item || this.gameStatus !== GAME_STATUS.PLAY) break;
-        // normal situation: ignore revealed cell
-        // expand mode: should consider revealed cell
-        const clickedCell = isExpand && item.row === row && item.col === col;
-        if (this.board[item.row][item.col].isRevealed && !clickedCell) continue;
+      while (queue.length) {
+        const item = queue.shift() as CellItem;
+        const isExpandStartCell =
+          isExpand && item.row === row && item.col === col;
+        if (this.board[item.row][item.col].isRevealed && !isExpandStartCell)
+          continue;
         this.board[item.row][item.col].isRevealed = true;
-        const tempQueue = []; // store unrevealed adjacent cells
+        const tempQueue: CellItem[] = []; // store unrevealed adjacent cells
         for (const [r, c] of ADJACENT_GRID_DELTA) {
           if (!isCellValid(item.row, item.col, r, c)) continue;
           const { isMine, isFlagged, isRevealed } =
             this.board[item.row + r][item.col + c];
-          if (clickedCell && isMine && !isFlagged) {
-            this.updateGameStatus(GAME_STATUS.LOSE);
-
-            break;
-          }
-          if (isMine) {
-            if (!clickedCell) this.board[item.row][item.col].count += 1;
-          } else if (!isRevealed && !isFlagged) {
+          if (!isExpandStartCell)
+            this.board[item.row][item.col].count += Number(isMine);
+          if (!isRevealed && !isFlagged && !isMine)
             tempQueue.push({ row: item.row + r, col: item.col + c });
-          }
         }
-        if (!this.board[item.row][item.col].count || clickedCell) {
+        if (!this.board[item.row][item.col].count || isExpandStartCell) {
           queue.push(...tempQueue);
         }
       }
@@ -150,11 +149,18 @@ export default defineStore('game', {
       if (!isRevealed || !count) return;
       // check flags around is eual to mine count
       let flagCount = 0;
+      let hasErrorFlag = false;
       for (const [r, c] of ADJACENT_GRID_DELTA) {
         if (!isCellValid(row, col, r, c)) continue;
-        flagCount += Number(this.board[row + r][col + c].isFlagged);
+        const { isFlagged, isMine } = this.board[row + r][col + c];
+        flagCount += Number(isFlagged);
+        if (isFlagged && !isMine) hasErrorFlag = true;
       }
       if (flagCount !== count) return;
+      if (hasErrorFlag) {
+        this.updateGameStatus(GAME_STATUS.LOSE);
+        return;
+      }
       this.revealCell(row, col, true);
     },
     updateGameStatus(status: string) {
