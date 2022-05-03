@@ -8,6 +8,7 @@ import {
   TOAST_MSG,
 } from '@/handler/constants';
 import { shuffle, isCellValid, detectDevice, detectOS } from '@/handler/utils';
+import Denque from 'denque';
 
 type BoardItem = {
   isMine: boolean;
@@ -88,8 +89,7 @@ export default defineStore('game', {
     },
     // @param isExpand imply the current cell is from expandFromCell, need to force check adjacent cells
     revealCell(row: number, col: number, isExpand = false) {
-      const queue: CellItem[] = [];
-      queue.unshift({ row, col });
+      const queue = new Denque([{ row, col }]);
       while (queue.length) {
         const item = queue.shift() as CellItem;
         const isExpandStartCell =
@@ -107,9 +107,8 @@ export default defineStore('game', {
           if (!isRevealed && !isFlagged && !isMine)
             tempQueue.push({ row: item.row + r, col: item.col + c });
         }
-        if (!this.board[item.row][item.col].count || isExpandStartCell) {
-          queue.push(...tempQueue);
-        }
+        if (!this.board[item.row][item.col].count || isExpandStartCell)
+          tempQueue.forEach((el) => queue.push(el));
       }
       this.checkWinStatus();
     },
