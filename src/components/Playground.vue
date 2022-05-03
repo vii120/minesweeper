@@ -7,6 +7,8 @@
         :key="`row_${rKey}`"
       >
         <div
+          v-for="(cell, ckey) in row"
+          :key="`cell_${ckey}`"
           class="board-list__cell"
           :class="{
             'board-list__cell--clickable':
@@ -17,11 +19,13 @@
               gameOver && cell.isFlagged && !cell.isMine,
           }"
           :data-count="cell.count || null"
-          v-for="(cell, ckey) in row"
-          :key="`cell_${ckey}`"
           @click="gameStore.handleCellClick(rKey, ckey)"
           @contextmenu="(e) => onContextmenu(e, rKey, ckey)"
-          @dblclick="gameStore.expandFromCell(rKey, ckey)"
+          @dblclick="onDblclick(rKey, ckey)"
+          @touchstart="(e) => handleTouchstart(e, rKey, ckey)"
+          @touchend="handleTouchend"
+          @touchmove="clearTouchTimer"
+          @touchcancel="clearTouchTimer"
         >
           <span v-if="gameOver">
             <template v-if="cell.isMine">
@@ -46,20 +50,50 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGame } from '@/store';
 import { GAME_STATUS } from '@/handler/constants';
 import Toast from './Toast.vue';
 
 const gameStore = useGame();
-const { board, gameStatus } = storeToRefs(gameStore);
+const { board, gameStatus, isMobile } = storeToRefs(gameStore);
 
 const gameOver = computed<boolean>(() => gameStatus.value === GAME_STATUS.LOSE);
 
 const onContextmenu = (e: MouseEvent, row: number, col: number) => {
   e.preventDefault();
+  if (isMobile.value) return;
   gameStore.handleCellFlag(row, col);
+};
+const onDblclick = (row: number, col: number) => {
+  if (isMobile.value) return;
+  gameStore.expandFromCell(row, col);
+};
+
+// handle long press event on touch device
+const touchTimer = ref<ReturnType<typeof setInterval> | null>(null);
+const isLongPress = ref<boolean>(false);
+const clearTouchTimer = () => {
+  clearInterval(touchTimer.value as ReturnType<typeof setInterval>);
+};
+const handleTouchstart = (e: TouchEvent, row: number, col: number) => {
+  clearTouchTimer();
+  if (e.touches.length > 1) return; // skip zoom-in gesture
+  touchTimer.value = setTimeout(() => {
+    isLongPress.value = true;
+    gameStore.handleCellFlag(row, col);
+    window.navigator.vibrate(200); // for android device
+    clearTouchTimer();
+  }, 500);
+};
+const handleTouchend = (e: TouchEvent) => {
+  if (isLongPress.value) {
+    e.preventDefault(); // prevent from triggering click event
+    isLongPress.value = false;
+  } else {
+    clearTouchTimer();
+  }
 };
 </script>
 
@@ -69,6 +103,8 @@ $count-colors: #4d8bbf, #3f924f, #bb3e51, #5f2a7e, #f2e640, #19214d, #6bc144,
 
 .board-wrapper {
   position: relative;
+  user-select: none;
+  -webkit-touch-callout: none;
   .board-list {
     width: 7rem;
     height: 7rem;
@@ -106,9 +142,13 @@ $count-colors: #4d8bbf, #3f924f, #bb3e51, #5f2a7e, #f2e640, #19214d, #6bc144,
         visibility: hidden;
         transition: all 0.2s;
       }
-      &--clickable:hover::before {
-        opacity: 1;
-        visibility: visible;
+      &--clickable {
+        @media (hover: hover) and (pointer: fine) {
+          &:hover::before {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
       }
       &--revealed {
         box-shadow: $shadow-inner;

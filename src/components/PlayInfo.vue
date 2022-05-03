@@ -10,10 +10,9 @@
     </div>
     <button
       class="info__item btn--reset"
-      :class="{
-        disabled:
-          gameStatus === GAME_STATUS.DEFAULT || gameStatus === GAME_STATUS.PLAY,
-      }"
+      :disabled="
+        gameStatus === GAME_STATUS.DEFAULT || gameStatus === GAME_STATUS.PLAY
+      "
       @click="gameStore.handleReset"
     >
       <ion-icon name="game-controller"></ion-icon>reset
@@ -71,7 +70,7 @@ onUnmounted(() => {
     flex: 1;
     height: 100%;
     margin: 0 0.3rem;
-    padding-top: 0.2rem;
+    padding-top: 0.3rem;
     @include flexCenter;
     text-transform: uppercase;
     overflow: hidden;
@@ -97,7 +96,7 @@ onUnmounted(() => {
     border-radius: inherit;
     color: #4d8bbf;
     box-shadow: inherit;
-    &.disabled {
+    &:disabled {
       box-shadow: $shadow-inner;
       color: #aaa;
     }

@@ -8,6 +8,7 @@ import {
   TOAST_MSG,
 } from '@/handler/constants';
 import { shuffle, isCellValid } from '@/handler/utils';
+import { detectDevice } from '@/handler/utils';
 
 type BoardItem = {
   isMine: boolean;
@@ -16,12 +17,14 @@ type BoardItem = {
   count: number;
 };
 type GameType = {
+  userDevice: string;
   board: BoardItem[][];
   startFirstStep: boolean;
   gameStatus: typeof GAME_STATUS[keyof typeof GAME_STATUS]; // value of GAME_STATUS
 };
 
 const state = (): GameType => ({
+  userDevice: '',
   board: [],
   startFirstStep: false,
   gameStatus: GAME_STATUS.DEFAULT,
@@ -30,6 +33,9 @@ const state = (): GameType => ({
 export default defineStore('game', {
   state,
   actions: {
+    checkUserDevice() {
+      this.userDevice = detectDevice();
+    },
     initBoard() {
       const flatBoard: BoardItem[] = shuffle(
         Array.apply([], Array(BOARD_SIZE * BOARD_SIZE)).map((_, key) => ({
@@ -75,7 +81,7 @@ export default defineStore('game', {
     revealCell(row: number, col: number, isExpand = false) {
       const queue: { row: number; col: number }[] = [];
       queue.unshift({ row, col });
-      while (queue.length !== 0 && queue.length < 100) {
+      while (queue.length !== 0) {
         const item = queue.shift();
         if (!item || this.gameStatus !== GAME_STATUS.PLAY) break;
         // normal situation: ignore revealed cell
@@ -169,6 +175,9 @@ export default defineStore('game', {
     },
     remainMines(): number {
       return MINE_COUNT - this.flatBoard.filter((el) => el.isFlagged).length;
+    },
+    isMobile(state) {
+      return state.userDevice === 'mobile';
     },
   },
 });

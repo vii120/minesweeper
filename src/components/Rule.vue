@@ -1,7 +1,9 @@
 <template>
   <transition name="fadein">
     <div class="rule-wrapper" v-if="props.isOpen">
-      <h3><ion-icon :name="ruleData.icon"></ion-icon> {{ ruleData.title }}</h3>
+      <h3>
+        <ion-icon :name="ruleData.icon"></ion-icon> {{ ruleData.device }} device
+      </h3>
       <ol>
         <template v-for="(item, key) in ruleData.list" :key="key">
           <li v-if="item.display">
@@ -17,18 +19,20 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, onMounted, computed } from 'vue';
-import { detectDevice } from '@/handler/utils';
+import { defineProps, computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useGame } from '@/store';
+
+const gameStore = useGame();
+const { isMobile } = storeToRefs(gameStore);
 
 const props = defineProps({
   isOpen: { type: Boolean, default: false },
 });
-const userDevice = ref<string>('');
-const isMobile = computed(() => userDevice.value === 'mobile');
 const ruleData = computed(() => {
   return {
     icon: isMobile.value ? 'phone-portrait-outline' : 'laptop-outline',
-    title: isMobile.value ? 'mobile' : 'computer',
+    device: isMobile.value ? 'mobile' : 'computer',
     list: [
       {
         kbd: isMobile.value ? 'click' : 'left-click',
@@ -47,10 +51,6 @@ const ruleData = computed(() => {
       },
     ],
   };
-});
-
-onMounted(() => {
-  userDevice.value = detectDevice();
 });
 </script>
 
