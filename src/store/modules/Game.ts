@@ -27,7 +27,7 @@ type GameType = {
   userOS: string;
   board: BoardItem[][];
   startFirstStep: boolean;
-  gameStatus: typeof GAME_STATUS[keyof typeof GAME_STATUS]; // value of GAME_STATUS
+  gameStatus: GAME_STATUS;
 };
 
 const state = (): GameType => ({
@@ -162,7 +162,7 @@ export default defineStore('game', {
       }
       this.revealCell(row, col, true);
     },
-    updateGameStatus(status: string) {
+    updateGameStatus(status: GAME_STATUS) {
       this.gameStatus = status;
       const { addToast } = useGeneral();
       switch (status) {

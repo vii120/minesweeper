@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { THEME_MAP } from '@/handler/constants';
+import { THEME_MAP, TOAST_MSG } from '@/handler/constants';
 
 type GeneralType = {
-  theme: typeof THEME_MAP[keyof typeof THEME_MAP];
-  currentToast: string | null;
+  theme: THEME_MAP;
+  currentToast: TOAST_MSG | null;
 };
 
 const state = (): GeneralType => ({
@@ -23,7 +23,7 @@ export default defineStore('general', {
         : (this.theme = THEME_MAP.DARK);
       this.setThemeAttr();
     },
-    addToast(msg: string) {
+    addToast(msg: TOAST_MSG) {
       this.currentToast = msg;
     },
     removeToast() {
