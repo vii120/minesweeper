@@ -188,7 +188,7 @@ export default defineStore('game', {
       return state.userDevice === 'mobile';
     },
     isIOS(state) {
-      return state.userOS === 'ios';
+      return state.userOS === 'iOS';
     },
   },
 });
