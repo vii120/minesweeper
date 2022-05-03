@@ -37,6 +37,9 @@ onMounted(() => {
   overflow-x: hidden;
   overflow-y: auto;
   transition: background-color 0.1s;
+  // prevent touch selecting on mobile
+  user-select: none;
+  -webkit-touch-callout: none;
   .main {
     position: relative;
     max-width: 14rem;

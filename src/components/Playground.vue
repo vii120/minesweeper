@@ -103,8 +103,6 @@ $count-colors: #4d8bbf, #3f924f, #bb3e51, #5f2a7e, #f2e640, #19214d, #6bc144,
 
 .board-wrapper {
   position: relative;
-  user-select: none;
-  -webkit-touch-callout: none;
   .board-list {
     width: 7rem;
     height: 7rem;
