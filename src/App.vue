@@ -13,12 +13,12 @@ import PlayInfo from '@/components/PlayInfo.vue';
 import Navbar from '@/components/Navbar.vue';
 import { useGeneral, useGame } from '@/store';
 
-const { initBoard, checkUserDevice } = useGame();
+const { initBoard, checkDeviceInfo } = useGame();
 const { setThemeAttr } = useGeneral();
 
 onMounted(() => {
   setThemeAttr();
-  checkUserDevice();
+  checkDeviceInfo();
   initBoard();
 });
 </script>

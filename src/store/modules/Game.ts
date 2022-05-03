@@ -8,7 +8,7 @@ import {
   TOAST_MSG,
 } from '@/handler/constants';
 import { shuffle, isCellValid } from '@/handler/utils';
-import { detectDevice } from '@/handler/utils';
+import { detectDevice, detectOS } from '@/handler/utils';
 
 type BoardItem = {
   isMine: boolean;
@@ -18,6 +18,7 @@ type BoardItem = {
 };
 type GameType = {
   userDevice: string;
+  userOS: string;
   board: BoardItem[][];
   startFirstStep: boolean;
   gameStatus: typeof GAME_STATUS[keyof typeof GAME_STATUS]; // value of GAME_STATUS
@@ -25,6 +26,7 @@ type GameType = {
 
 const state = (): GameType => ({
   userDevice: '',
+  userOS: '',
   board: [],
   startFirstStep: false,
   gameStatus: GAME_STATUS.DEFAULT,
@@ -33,8 +35,9 @@ const state = (): GameType => ({
 export default defineStore('game', {
   state,
   actions: {
-    checkUserDevice() {
+    checkDeviceInfo() {
       this.userDevice = detectDevice();
+      this.userOS = detectOS();
     },
     initBoard() {
       const flatBoard: BoardItem[] = shuffle(
@@ -178,6 +181,9 @@ export default defineStore('game', {
     },
     isMobile(state) {
       return state.userDevice === 'mobile';
+    },
+    isIOS(state) {
+      return state.userOS === 'ios';
     },
   },
 });

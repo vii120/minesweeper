@@ -24,8 +24,6 @@
           @dblclick="onDblclick(rKey, ckey)"
           @touchstart="(e) => handleTouchstart(e, rKey, ckey)"
           @touchend="handleTouchend"
-          @touchmove="clearTouchTimer"
-          @touchcancel="clearTouchTimer"
         >
           <span v-if="gameOver">
             <template v-if="cell.isMine">
@@ -57,13 +55,12 @@ import { GAME_STATUS } from '@/handler/constants';
 import Toast from './Toast.vue';
 
 const gameStore = useGame();
-const { board, gameStatus, isMobile } = storeToRefs(gameStore);
+const { board, gameStatus, isMobile, isIOS } = storeToRefs(gameStore);
 
 const gameOver = computed<boolean>(() => gameStatus.value === GAME_STATUS.LOSE);
 
 const onContextmenu = (e: MouseEvent, row: number, col: number) => {
   e.preventDefault();
-  if (isMobile.value) return;
   gameStore.handleCellFlag(row, col);
 };
 const onDblclick = (row: number, col: number) => {
@@ -78,16 +75,20 @@ const clearTouchTimer = () => {
   clearInterval(touchTimer.value as ReturnType<typeof setInterval>);
 };
 const handleTouchstart = (e: TouchEvent, row: number, col: number) => {
+  if (!isIOS.value || !isMobile.value) return;
   clearTouchTimer();
   if (e.touches.length > 1) return; // skip zoom-in gesture
+  isLongPress.value = false;
   touchTimer.value = setTimeout(() => {
-    isLongPress.value = true;
     gameStore.handleCellFlag(row, col);
-    window.navigator.vibrate(200); // for android device
+    isLongPress.value = true;
     clearTouchTimer();
   }, 500);
+  // prevent from triggering click event
+  if (board.value[row][col].isFlagged) e.preventDefault();
 };
 const handleTouchend = (e: TouchEvent) => {
+  if (!isIOS.value || !isMobile.value) return;
   if (isLongPress.value) {
     e.preventDefault(); // prevent from triggering click event
     isLongPress.value = false;
