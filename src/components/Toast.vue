@@ -58,7 +58,7 @@ onUnmounted(() => {
   padding: 0.1rem;
   padding-right: 0.5rem;
   border-radius: 0.1rem;
-  backdrop-filter: blur(8px);
+  @include backdropFilterBlur(8px);
   box-shadow: var(--popup-shadow);
   z-index: 10;
   .btn--close {

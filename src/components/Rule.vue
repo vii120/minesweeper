@@ -65,7 +65,7 @@ const ruleData = computed(() => {
   line-height: 1.5;
   text-align: left;
   border-radius: $main-bdrs;
-  backdrop-filter: blur(8px);
+  @include backdropFilterBlur(8px);
   box-shadow: var(--popup-shadow);
   transform-origin: top right;
   z-index: 20;

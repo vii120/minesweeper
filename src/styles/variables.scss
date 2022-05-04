@@ -39,3 +39,10 @@ $shadow-inner: inset 2px 2px 5px var(--shadow-dark),
 @mixin expandTriggerArea {
   border: 0.1rem solid transparent;
 }
+
+@mixin backdropFilterBlur($blur: 0) {
+  backdrop-filter: blur($blur);
+  @supports not (backdrop-filter: blur(0px)) {
+    background-color: var(--bg-color);
+  }
+}
