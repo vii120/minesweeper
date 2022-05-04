@@ -38,8 +38,9 @@ const clearTimer = () => {
 watch(
   () => gameStatus.value,
   (val) => {
-    if (val === GAME_STATUS.PLAY) {
+    if (val === GAME_STATUS.DEFAULT) {
       timeCount.value = 0;
+    } else if (val === GAME_STATUS.PLAY) {
       clearTimer();
       timer.value = setInterval(() => {
         timeCount.value++;
