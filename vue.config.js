@@ -1,5 +1,4 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/minesweeper/' : '/',
   pages: {
     index: {
       entry: 'src/main.ts',

@@ -6,18 +6,17 @@ A single-player puzzle game in Neumorphic design 🎮
 
 ## Introduction
 
-[🚩 Demo 💣](https://vii120.github.io/minesweeper/)
+[🚩 Demo 💣](https://vii120-minesweeper.netlify.app/)
 
 - build with Vue3, TypeScript, and Pinia
 - can switch between dark/light modes
 - use [ionicons](https://ionic.io/ionicons) for icons
 - use [denque](https://www.npmjs.com/package/denque) for BFS array handling
+- host on netlify
 
 ## Project setup
 
 ```bash
 yarn install
 yarn serve
-
-yarn build:gh-pages # deploy on gh-pages branch
 ```
