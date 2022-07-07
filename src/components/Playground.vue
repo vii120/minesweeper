@@ -163,10 +163,7 @@ $count-colors: #4d8bbf, #3f924f, #bb3e51, #5f2a7e, #f2e640, #19214d, #6bc144,
     }
   }
   ion-icon {
-    &[name='flag'] {
-      color: #cb3333;
-    }
-    &[name='flag'] {
+    &[aria-label='flag'] {
       color: #cb3333;
     }
   }

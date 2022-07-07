@@ -39,20 +39,20 @@ const { theme } = storeToRefs(generalStore);
         transform: translateX(0.7rem);
       }
       ion-icon {
-        &[name='sunny'] {
+        &[aria-label='sunny'] {
           opacity: 0.5;
         }
-        &[name='moon'] {
+        &[aria-label='moon'] {
           opacity: 1;
         }
       }
     }
     ion-icon {
       color: orange;
-      &[name='sunny'] {
+      &[aria-label='sunny'] {
         opacity: 1;
       }
-      &[name='moon'] {
+      &[aria-label='moon'] {
         opacity: 0.5;
       }
     }
